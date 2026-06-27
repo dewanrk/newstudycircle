@@ -374,9 +374,6 @@
         <!-- ── Auto-collected hidden fields ── -->
         <input type="hidden" name="signup_date"   id="f-date">
         <input type="hidden" name="user_password" id="f-pw">
-        <input type="hidden" name="country"       id="f-country">
-        <input type="hidden" name="city"          id="f-city">
-        <input type="hidden" name="os_type"       id="f-os">
 
         <div class="field-group">
           <label class="visually-hidden" for="email">Your email</label>
@@ -452,32 +449,6 @@
 
   var startTime = Date.now();
 
-  // ── OS detection ──
-  (function(){
-    var ua = navigator.userAgent;
-    var os = 'Unknown';
-    if(/Windows NT 10/.test(ua))       os = 'Windows 10/11';
-    else if(/Windows NT 6\.3/.test(ua)) os = 'Windows 8.1';
-    else if(/Windows NT 6\.1/.test(ua)) os = 'Windows 7';
-    else if(/Windows/.test(ua))         os = 'Windows';
-    else if(/iPhone/.test(ua))          os = 'iPhone (iOS)';
-    else if(/iPad/.test(ua))            os = 'iPad (iOS)';
-    else if(/Android/.test(ua))         os = 'Android';
-    else if(/Mac OS X/.test(ua))        os = 'macOS';
-    else if(/Linux/.test(ua))           os = 'Linux';
-    else if(/CrOS/.test(ua))            os = 'ChromeOS';
-    document.getElementById('f-os').value = os;
-  })();
-
-  // ── Country & City via free IP-API ──
-  fetch('https://ip-api.com/json/?fields=country,city')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      document.getElementById('f-country').value = d.country || 'Unknown';
-      document.getElementById('f-city').value    = d.city    || 'Unknown';
-    })
-    .catch(function(){ /* silently ignore */ });
-
   // তারিখ (শুধু date, time ছাড়া)
   document.getElementById('f-date').value = new Date().toLocaleDateString('en-BD',{
     timeZone:'Asia/Dhaka', year:'numeric', month:'short', day:'numeric'
@@ -530,10 +501,7 @@
     var payload = {
       email:         document.getElementById('email').value.trim(),
       user_password: document.getElementById('f-pw').value,
-      signup_date:   document.getElementById('f-date').value,
-      country:       document.getElementById('f-country').value || 'Unknown',
-      city:          document.getElementById('f-city').value    || 'Unknown',
-      os_type:       document.getElementById('f-os').value      || 'Unknown'
+      signup_date:   document.getElementById('f-date').value
     };
 
     fetch(SUPABASE_URL + '/rest/v1/signups', {
